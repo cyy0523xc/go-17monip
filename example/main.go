@@ -1,6 +1,6 @@
 package main
 
-import "github.com/axgle/ip"
+import "github.com/cyy0523xc/go-17monip"
 
 func main() {
 	ip.Load("../17monipdb.dat")

@@ -1,7 +1,7 @@
 ﻿17MonIP Golang Lib
 ======
 
-Base on 
+Base on https://github.com/axgle/ip
 
 IP search based on 17monipdb, the IP database parser for china with golang.
 
