@@ -14,4 +14,6 @@ func main() {
 	address = ip.Find("202.115.128.64") //address: 中国\t四川\t成都理工大学
 	println(address)
 
+	address = ip.Find("116.22.198.67") //address: 中国\t四川\t成都理工大学
+	println(address)
 }
