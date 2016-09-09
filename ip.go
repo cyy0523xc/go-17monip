@@ -9,18 +9,25 @@ import (
 )
 
 var buffer []byte
-var ip_offset uint32
-var ip_index []byte
 
 func Load(ipBinaryFilePath string) {
-	var err error
-	buffer, err = ioutil.ReadFile(ipBinaryFilePath)
-	if err != nil {
-		log.Fatal(err)
+	// 避免多次初始化
+	if buffer == nil {
+		var err error
+		buffer, err = ioutil.ReadFile(ipBinaryFilePath)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
 func Find(ip_address string) string {
+	var (
+		ip_offset    uint32
+		ip_index     []byte
+		index_offset uint32 = 0
+		index_length uint32 = 0
+	)
 
 	ipdot := strings.Split(ip_address, ".")
 	pre_ip, _ := strconv.Atoi(ipdot[0])
@@ -31,9 +38,6 @@ func Find(ip_address string) string {
 	nip := ip2long(ip_address)
 
 	start_len := bytesLittleEndianToUint32(ip_index[tmp_offset : tmp_offset+4])
-
-	var index_offset uint32 = 0
-	var index_length uint32 = 0
 
 	for start := start_len*8 + 1024; start < ip_offset-1028; start += 8 {
 		if bytesBigEndianToUint32(ip_index[start:start+4]) >= nip {
@@ -51,9 +55,7 @@ func Find(ip_address string) string {
 	pos := index_offset + ip_offset - 1024
 
 	//fmt.Printf("%s", ip_index[pos-4:pos+index_length-4])
-
 	return string(ip_index[pos-4 : pos+index_length-4])
-
 }
 
 //binary.BigEndian.Uint32(b)
