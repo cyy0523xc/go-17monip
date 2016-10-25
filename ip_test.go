@@ -30,7 +30,4 @@ func TestFind(t *testing.T) {
 
 	ip := "210.26.48.71"
 	println(ip, Find(ip))
-
-	ip = "14.28.107.174"
-	println(ip, Find(ip))
 }
