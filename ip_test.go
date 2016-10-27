@@ -1,6 +1,7 @@
 package ip
 
 import "testing"
+import "os"
 
 func init() {
 	Load("17monipdb.dat")
@@ -30,4 +31,9 @@ func TestFind(t *testing.T) {
 
 	ip := "210.26.48.71"
 	println(ip, Find(ip))
+
+	ip = os.Getenv("TEST_IP")
+	if len(ip) > 1 {
+		println(ip, Find(ip))
+	}
 }
