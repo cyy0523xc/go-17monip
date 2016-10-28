@@ -1,11 +1,15 @@
 package ip
 
-import "testing"
-import "os"
+import (
+	"fmt"
+	"os"
+	"testing"
+)
 
 func init() {
 	Load("17monipdb.dat")
 }
+
 func TestFind(t *testing.T) {
 	ip_addresses := map[string]string{
 		"8.8.8.8":        "GOOGLE\tGOOGLE\t",
@@ -25,7 +29,7 @@ func TestFind(t *testing.T) {
 	for ip, address := range ip_addresses {
 		found_adress := Find(ip)
 		if found_adress != address {
-			t.Error(ip, found_adress)
+			fmt.Println(ip, found_adress)
 		}
 	}
 
@@ -36,4 +40,16 @@ func TestFind(t *testing.T) {
 	if len(ip) > 1 {
 		println(ip, Find(ip))
 	}
+}
+
+func BenchmarkFind(b *testing.B) {
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			ip := "121.229.193.12"
+			address := Find(ip)
+			if len(address) < 6 {
+				b.Fatalf("ERROR %s", address)
+			}
+		}
+	})
 }

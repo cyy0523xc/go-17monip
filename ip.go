@@ -1,6 +1,7 @@
 package ip
 
 import (
+	//"fmt"
 	"io/ioutil"
 	"log"
 	"net"
@@ -35,26 +36,30 @@ func Find(ip_address string) string {
 
 	ip_offset = bytesBigEndianToUint32(buffer[:4])
 	ip_index = buffer[4:ip_offset]
+
 	nip := ip2long(ip_address)
 
 	start_len := bytesLittleEndianToUint32(ip_index[tmp_offset : tmp_offset+4])
 
+	var tmp = make([]byte, 4)
 	for start := start_len*8 + 1024; start < ip_offset-1028; start += 8 {
 		if bytesBigEndianToUint32(ip_index[start:start+4]) >= nip {
 			index_length = 0xFF & uint32(ip_index[start+7])
-			tmp := ip_index[start+4 : start+7]
-			tmp = append(tmp, 0x0)
+			tmp[0] = ip_index[start+4]
+			tmp[1] = ip_index[start+5]
+			tmp[2] = ip_index[start+6]
+			//tmp := ip_index[start+4 : start+7]
+			//tmp = append(tmp, 0x0)
 			index_offset = bytesLittleEndianToUint32(tmp)
 			break
 		}
 	}
 	if index_offset == 0 {
-		return "N/A\tN/A"
+		//return "N/A\tN/A"
+		return ""
 	}
 
 	pos := index_offset + ip_offset - 1024
-
-	//fmt.Printf("%s", ip_index[pos-4:pos+index_length-4])
 	return string(ip_index[pos-4 : pos+index_length-4])
 }
 

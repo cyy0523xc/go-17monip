@@ -35,6 +35,14 @@ func main() {
 }
 ```
 
+## 性能
+
+在4核4G的个人电脑上测试，如下：
+
+```
+// go test -test.bench=".*"
+BenchmarkFind-4      2000000          841 ns/op
+```
 
 ## License
 
