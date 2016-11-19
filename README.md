@@ -42,6 +42,11 @@ BenchmarkFind-4      2000000          841 ns/op
 
 // 2016-11-19
 BenchmarkFind-4   	 2000000	       783 ns/op
+BenchmarkFind2-4      100000         14106 ns/op
+
+// 将原来的循环查找，改为二分法查找
+BenchmarkFind-4    	10000000	       136 ns/op
+BenchmarkFind2-4   	10000000	       133 ns/op
 ```
 
 ## License

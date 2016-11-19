@@ -56,3 +56,15 @@ func BenchmarkFind(b *testing.B) {
 		}
 	})
 }
+
+func BenchmarkFind2(b *testing.B) {
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			ip := "202.115.128.64"
+			address := Find(ip)
+			if len(address) < 6 {
+				b.Fatalf("ERROR %s", address)
+			}
+		}
+	})
+}

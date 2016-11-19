@@ -40,22 +40,60 @@ func Find(ipAddress string) string {
 	nip := bytesBigEndianToUint32(ip)
 	tmpOffset := int(ip[0]) << 2
 	startLen := bytesLittleEndianToUint32(ipIndex[tmpOffset : tmpOffset+4])
-	for start := startLen*8 + 1024; start < ipOffset-1028; start += 8 {
-		if bytesBigEndianToUint32(ipIndex[start:start+4]) >= nip {
-			indexLength = 0xFF & uint32(ipIndex[start+7])
-			tmp[0] = ipIndex[start+4]
-			tmp[1] = ipIndex[start+5]
-			tmp[2] = ipIndex[start+6]
+
+	start := startLen*8 + 1024
+	end := ipOffset - 1028
+	if start < end {
+		if index := fastFind(start, end, nip); index > 0 {
+			//println(index)
+			indexLength = 0xFF & uint32(ipIndex[index+7])
+			tmp[0] = ipIndex[index+4]
+			tmp[1] = ipIndex[index+5]
+			tmp[2] = ipIndex[index+6]
+			indexOffset = bytesLittleEndianToUint32(tmp)
+		}
+	}
+	/*for index := startLen*8 + 1024; index < ipOffset-1028; index += 8 {
+		if bytesBigEndianToUint32(ipIndex[index:index+4]) >= nip {
+			indexLength = 0xFF & uint32(ipIndex[index+7])
+			tmp[0] = ipIndex[index+4]
+			tmp[1] = ipIndex[index+5]
+			tmp[2] = ipIndex[index+6]
 			indexOffset = bytesLittleEndianToUint32(tmp)
 			break
 		}
-	}
+	}*/
 	if indexOffset == 0 {
 		return ""
 	}
 
 	pos := indexOffset + ipOffset - 1024
 	return string(ipIndex[pos-4 : pos+indexLength-4])
+}
+
+// fastFind 使用二分法查找
+func fastFind(start, end, nip uint32) uint32 {
+	//println(start, end)
+	if start+8 >= end {
+		if bytesBigEndianToUint32(ipIndex[end:end+4]) >= nip {
+			return end
+		}
+		return 0
+	}
+
+	// 计算新的开始值
+	tmp := (end - start) >> 1
+	newStart := start + tmp - tmp&7
+
+	// 二分
+	tmpIp := bytesBigEndianToUint32(ipIndex[newStart : newStart+4])
+	if tmpIp > nip {
+		return fastFind(start, newStart, nip)
+	} else if tmpIp < nip {
+		return fastFind(newStart, end, nip)
+	}
+
+	return newStart
 }
 
 //binary.BigEndian.Uint32(b)
