@@ -1,20 +1,17 @@
-﻿17MonIP Golang Lib
-======
+﻿# 17MonIP Golang Lib
 
 Base on https://github.com/axgle/ip
 
 IP search based on 17monipdb, the IP database parser for china with golang.
 
 
-install
---------
+## install
 
 ```sh
 go get github.com/cyy0523xc/go-17monip
 ```
 
-example
--------
+## example
 
 ```go
 package main
@@ -42,6 +39,9 @@ func main() {
 ```
 // go test -test.bench=".*"
 BenchmarkFind-4      2000000          841 ns/op
+
+// 2016-11-19
+BenchmarkFind-4   	 2000000	       783 ns/op
 ```
 
 ## License
