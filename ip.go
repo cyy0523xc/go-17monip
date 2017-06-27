@@ -10,7 +10,6 @@ import (
 var (
 	ipIndex  []byte
 	ipOffset uint32
-	ipLen    int
 )
 
 func Load(ipBinaryFilePath string) {
@@ -24,13 +23,13 @@ func Load(ipBinaryFilePath string) {
 
 		ipOffset = bytesBigEndianToUint32(buffer[:4])
 		ipIndex = buffer[4:ipOffset]
-		ipLen = len(ipIndex)
 	}
 }
 
 // Find TODO IPv6的地址暂时不做处理
+// @return 如果匹配不到则返回空字符串
 func Find(ipAddress string) string {
-	if tmp := strings.Split(ipAddress, ":"); len(tmp) > 1 {
+	if strings.Contains(ipAddress, ":") {
 		return ""
 	}
 
