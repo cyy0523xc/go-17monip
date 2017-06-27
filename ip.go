@@ -4,29 +4,41 @@ import (
 	//"fmt"
 	"io/ioutil"
 	"net"
+	"strings"
 )
 
 var (
-	buffer   []byte
 	ipIndex  []byte
 	ipOffset uint32
+	ipLen    int
 )
 
 func Load(ipBinaryFilePath string) {
 	// 避免多次初始化
-	if buffer == nil {
+	if ipIndex == nil {
 		var err error
+		var buffer []byte
 		if buffer, err = ioutil.ReadFile(ipBinaryFilePath); err != nil {
 			panic(err)
 		}
 
 		ipOffset = bytesBigEndianToUint32(buffer[:4])
 		ipIndex = buffer[4:ipOffset]
+		ipLen = len(ipIndex)
 	}
 }
 
+// Find TODO IPv6的地址暂时不做处理
 func Find(ipAddress string) string {
+	if tmp := strings.Split(ipAddress, ":"); len(tmp) > 1 {
+		return ""
+	}
+
 	ip := net.ParseIP(ipAddress)
+	if ip.IsMulticast() || ip.IsLoopback() {
+		return ""
+	}
+
 	if ip == nil {
 		return ""
 	}
